@@ -94,6 +94,9 @@ config:
 
 persistence:
   enabled: true
+  volumeClaimTemplate:
+    enabled: true
+    namespace: infrastructure
   accessModes:
     - ReadWriteOnce
   existingClaim: ""

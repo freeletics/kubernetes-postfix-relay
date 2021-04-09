@@ -93,6 +93,11 @@ postfix_set_relay_tls_level() {
 	else
 		notice "Setting smtp_tls_security_level: ${emphasis}$RELAYHOST_TLS_LEVEL${reset}"
 		do_postconf -e "smtp_tls_security_level=$RELAYHOST_TLS_LEVEL"
+
+		if [ "${RELAYHOST_TLS_LEVEL}" = "encrypt" ]; then
+			do_postconf -e "smtp_use_tls=${SMTP_USE_TLS:-no}"
+			do_postconf -e "smtp_tls_note_starttls_offer=${SMTP_TLS_NOTE_STARTTLS_OFFER:-no}"
+		fi
 	fi
 }
 
@@ -116,7 +121,11 @@ postfix_setup_relayhost() {
 			else
 				echo "$RELAYHOST $RELAYHOST_USERNAME:$RELAYHOST_PASSWORD" >> /etc/postfix/sasl_passwd
 			fi
+
 			postmap lmdb:/etc/postfix/sasl_passwd
+			chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.lmdb
+			chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.lmdb
+
 			do_postconf -e "smtp_sasl_auth_enable=yes"
 			do_postconf -e "smtp_sasl_password_maps=lmdb:/etc/postfix/sasl_passwd"
 			do_postconf -e "smtp_sasl_security_options=noanonymous"
