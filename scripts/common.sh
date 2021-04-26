@@ -57,11 +57,6 @@ is_color_term() {
 is_color_term
 
 
-deprecated() {
-	printf "${reset}‣ ${lightblue}DEPRECATED!${reset} "
-	echo -e "$@${reset}"
-}
-
 debug() {
 	printf "${reset}‣ ${gray}DEBUG${reset} "
 	echo -e "$@${reset}"
@@ -74,16 +69,6 @@ info() {
 
 infon() {
 	printf "${reset}‣ ${green}INFO ${reset} "
-	echo -en "$@${reset}"
-}
-
-notice() {
-	printf "${reset}‣ ${yellow}NOTE ${reset} "
-	echo -e "$@${reset}"
-}
-
-noticen() {
-	printf "${reset}‣ ${yellow}NOTE ${reset} "
 	echo -en "$@${reset}"
 }
 
