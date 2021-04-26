@@ -93,8 +93,7 @@ spec:
                 - -c
                 - >-
                   ps axf | fgrep -v grep | fgrep -q "{supervisord}" &&
-                  ps axf | fgrep -v grep | fgrep -q "{postfix-script}" &&
-                  ps axf | fgrep -v grep | fgrep -q "{opendkim.sh}"
+                  ps axf | fgrep -v grep | fgrep -q "{postfix-script}"
           envFrom:
             - configMapRef:
                 name: {{ $fullName | quote }}
