@@ -28,12 +28,15 @@ rsyslog_log_format() {
 
 # Make and change owner of the Postfix folder
 reown_folders() {
-	mkdir -p /var/spool/postfix/pid
-	chown root:root -R /var/spool/postfix/
+	mkdir -p /var/spool/postfix/pid /var/spool/postfix/dev
+	chown root:root -R /var/spool/postfix/pid
+
+	postfix -c /etc/postfix/ set-permissions || true
 }
 
 # Update aliases database. It's not used, but postfix complains if the .db file is missing
 postfix_create_aliases() {
+	touch /etc/postfix/aliases
 	postalias /etc/postfix/aliases
 }
 
