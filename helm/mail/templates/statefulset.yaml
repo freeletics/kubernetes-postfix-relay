@@ -81,8 +81,8 @@ spec:
                 - sh
                 - -c
                 - >-
-                  ps axf | fgrep -v grep | fgrep -q "{supervisord}" &&
-                  ps axf | fgrep -v grep | fgrep -q "/usr/libexec/postfix/master"
+                  ps axf | fgrep -v grep | fgrep -q "supervisord" &&
+                  ps axf | fgrep -v grep | fgrep -q "/usr/lib/postfix/sbin/master"
           startupProbe:
             initialDelaySeconds: 2
             periodSeconds: 5
@@ -92,8 +92,8 @@ spec:
                 - sh
                 - -c
                 - >-
-                  ps axf | fgrep -v grep | fgrep -q "{supervisord}" &&
-                  ps axf | fgrep -v grep | fgrep -q "{postfix-script}"
+                  ps axf | fgrep -v grep | fgrep -q "supervisord" &&
+                  ps axf | fgrep -v grep | fgrep -q "/usr/lib/postfix/sbin/master"
           envFrom:
             - configMapRef:
                 name: {{ $fullName | quote }}
@@ -107,6 +107,9 @@ spec:
           volumeMounts:
             - mountPath: /var/spool/postfix
               name: {{ $fullName }}
+            - name: certs
+              mountPath: /var/run/certs
+              readOnly: true
           {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
           {{- end }}
@@ -124,6 +127,9 @@ spec:
       {{- else }}
         - name: {{ $fullName }}
           emptyDir: {}
+        - name: certs
+          secret:
+            secretName: {{ template "mail.name" . }}-certs
   {{- if .Values.persistence.volumeClaimTemplate.enabled }}
   volumeClaimTemplates:
     - metadata:

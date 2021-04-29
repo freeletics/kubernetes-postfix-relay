@@ -75,3 +75,14 @@ checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . |
 # Uses: https://github.com/stakater/Reloader
 configmap.reloader.stakater.com/reload: "{{ include "mail.fullname" . }}"
 {{- end -}}
+
+{{/*
+Generate certificates for mail server 
+*/}}
+{{- define "mail.gen-certs" -}}
+{{- $altNames := list ( printf "%s.%s" (include "mail.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "mail.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc.cluster.local" (include "mail.fullname" .) .Release.Namespace ) -}}
+{{- $ca := genCA "mail-ca" 365 -}}
+{{- $cert := genSignedCert ( include "mail.name" . ) nil $altNames 365 $ca -}}
+tls.crt: {{ $cert.Cert | b64enc }}
+tls.key: {{ $cert.Key | b64enc }}
+{{- end -}}

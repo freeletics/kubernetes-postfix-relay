@@ -5,15 +5,16 @@ FROM ubuntu:20.04
 # Install opendkim second to get the second account (102)
 RUN apt update && \
     apt install -y postfix \
-                   libsasl2-modules \
-                   ca-certificates \
-                   tzdata \
-                   supervisor \
-        		   rsyslog \
-        		   bash \
-        		   opendkim-tools \
-        		   curl \
-        		   postfix-lmdb
+        netcat \
+        libsasl2-modules \
+        ca-certificates \
+        tzdata \
+        supervisor \
+        rsyslog \
+        bash \
+        opendkim-tools \
+        curl \
+        postfix-lmdb
 
 # Set up configuration
 COPY configs/*      /etc/
