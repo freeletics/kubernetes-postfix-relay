@@ -1,18 +1,20 @@
-FROM alpine:3.13.5
+FROM ubuntu:20.04
 
 # Install supervisor, postfix
 # Install postfix first to get the first account (101)
 # Install opendkim second to get the second account (102)
-RUN apk add --no-cache postfix && \
-    apk add --no-cache opendkim && \
-    apk add --no-cache --upgrade cyrus-sasl cyrus-sasl-static \
-        cyrus-sasl-digestmd5 cyrus-sasl-crammd5 \
-        cyrus-sasl-login cyrus-sasl-ntlm && \
-    apk add --no-cache --upgrade ca-certificates tzdata supervisor \
-        rsyslog musl musl-utils bash opendkim-utils libcurl jsoncpp \
-        lmdb && \
-    (rm "/tmp/"* 2>/dev/null || true) && \
-    (rm -rf /var/cache/apk/* 2>/dev/null || true)
+RUN apt update && \
+    apt install -y postfix \
+        netcat \
+        libsasl2-modules \
+        ca-certificates \
+        tzdata \
+        supervisor \
+        rsyslog \
+        bash \
+        opendkim-tools \
+        curl \
+        postfix-lmdb
 
 # Set up configuration
 COPY configs/*      /etc/
